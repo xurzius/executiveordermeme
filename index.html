@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>$EO (MEMES)</title>
+    <link rel="icon" href="icon.jpeg">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <style>
+
+.search-container {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        #character-search {
+            width: 100%;
+            padding: 8px 1px 8px 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .image-panel {
+        overflow-y: auto;
+        max-height: 80vh;
+        scrollbar-width: thin;
+        scrollbar-color: #000000 #f0f0f0;
+    }
+    
+    .image-panel::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .image-panel::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        border-radius: 10px;
+    }
+    
+    .image-panel::-webkit-scrollbar-thumb {
+        background-color: #d62d20;
+        border-radius: 10px;
+    }
+    
+    /* Prevent body scroll when hovering panel */
+    body.scroll-lock {
+        overflow: hidden;
+    }
+        
+        .search-container::after {
+            content: "🔍";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        
+        .image-option {
+            display: block; /* Ensure they can be shown/hidden by search */
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+            display: none;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+
+            background-image: url('background.jpg');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        /* Add semi-transparent overlay for better readability */
+        position: relative;
+    }
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8); /* White overlay with 85% opacity */
+        z-index: -1;
+    }
+    
+        
+        .app-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 20px;
+        }
+        
+        /* Image selection panel */
+        .image-panel {
+            width: 250px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .image-option {
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .image-option:hover {
+            transform: scale(1.03);
+        }
+        
+        .image-option img {
+            width: 100%;
+            border-radius: 5px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .image-option.selected img {
+            border-color: #d62d20;
+        }
+        
+        .image-name {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
+        }
+        
+        /* Main meme area */
+        .meme-section {
+            flex: 1;
+            min-width: 600px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #d62d20;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .meme-container {
+            position: relative;
+            width: 600px;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .book-image {
+            width: 100%;
+            display: block;
+        }
+        
+        .text-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            gap: 30px;
+        }
+        
+        .text-input {
+            width: 48%;
+            background: white;
+            padding: 35px;
+            border-radius: 8px;
+            box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+        }
+        
+        .text-input h3 {
+            margin-top: 0;
+            color: #d62d20;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 5px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 5px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            resize: none;
+            transition: border 0.3s;
+            overflow-y: auto; 
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #d62d20;
+            box-shadow: 0 0 0 3px rgba(214, 45, 32, 0.2);
+        }
+        
+        .page-text {
+            position: absolute;
+            color: black;
+            text-align: center;
+            overflow: hidden;
+            white-space: pre-line;
+            word-break: keep-all;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        }
+        
+        #left-page-text {
+            top: 30%;
+            left: 42%;
+            width: 30%;
+            height: 45%;
+            font-size: 21px;
+            padding: 10px;
+            overflow-wrap: anywhere;
+        }
+        
+        #right-page-text {
+            top: 30%;
+            right: 10%;
+            width: 30%;
+            height: 45%; 
+            font-size: 21px;
+            padding: 10px;
+            overflow-wrap: anywhere;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        button {
+            background-color: #d62d20;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        /* Font panel (right side) */
+        .font-panel {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .font-option {
+            padding: 8px 12px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .font-option:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .font-option.selected {
+            background-color: #d62d20;
+            color: white;
+        }
+        
+        .font-category {
+            margin-top: 15px;
+            font-weight: bold;
+            color: #d62d20;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="app-container">
+        <!-- Left panel - Image selection -->
+        <div class="image-panel">
+            <h3>Choose Your Character</h3>
+
+            <div class="search-container">
+                <input type="text" id="character-search" placeholder="Search characters...">
+            </div>
+            
+            <div class="image-option selected" data-img="trump.jpg">
+                <img src="trump.jpg" alt="Trump">
+                <div class="image-name">Trump</div>
+            </div>
+            
+            <div class="image-option" data-img="fomo.jpg">
+                <img src="fomo.jpg" alt="Fomo">
+                <div class="image-name">Fomo</div>
+            </div>
+            
+            <div class="image-option" data-img="lyxe.jpg">
+                <img src="lyxe.jpg" alt="Lyxe">
+                <div class="image-name">Lyxe</div>
+            </div>
+            
+            <div class="image-option" data-img="ramonos.jpg">
+                <img src="ramonos.jpg" alt="Ramonos">
+                <div class="image-name">Ramonos</div>
+            </div>
+            
+            <div class="image-option" data-img="yenny.jpg">
+                <img src="yenny.jpg" alt="Yenny">
+                <div class="image-name">Yenny</div>
+            </div>
+
+            <div class="image-option" data-img="punk.jpg">
+                <img src="punk.jpg" alt="MrPunk">
+                <div class="image-name">MrPunk</div>
+            </div>
+
+            <div class="image-option" data-img="poe.jpg">
+                <img src="poe.jpg" alt="Poe">
+                <div class="image-name">Poe</div>
+            </div>
+
+            <div class="image-option" data-img="patty.jpg">
+                <img src="patty.jpg" alt="Patty">
+                <div class="image-name">PattyIce</div>
+            </div>
+
+            <div class="image-option" data-img="shadow.jpg">
+                <img src="shadow.jpg" alt="Shadow">
+                <div class="image-name">Shadow</div>
+            </div>
+        </div>
+
+        <div class="no-results">No characters found matching your search</div>
+        
+        <!-- Center section - Meme generator -->
+        <div class="meme-section">
+            <h1>EXECUTIVE ORDER GENERATOR</h1>
+            
+            <div class="meme-container">
+                <img id="meme-background" class="book-image" src="trump.jpg" alt="Selected background">
+                <div id="left-page-text" class="page-text"></div>
+                <div id="right-page-text" class="page-text"></div>
+            </div>
+            
+            <div class="text-inputs">
+                <div class="text-input">
+                    <h3>Left Page</h3>
+                    <textarea id="left-input" placeholder="Enter left page text"></textarea>
+                </div>
+                
+                <div class="text-input">
+                    <h3>Right Page</h3>
+                    <textarea id="right-input" placeholder="Enter right page text"></textarea>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="generate-btn">Generate Meme</button>
+                <button id="download-btn">Download Meme</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+        </div>
+        
+        <!-- Right panel - Font selection -->
+        <div class="font-panel">
+            <h3>Font Styles</h3>
+            
+            <div class="font-category">Meme Fonts</div>
+            <div class="font-option selected" data-font="Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif">Impact</div>
+            <div class="font-option" data-font="'Anton', sans-serif">Anton</div>
+            <div class="font-option" data-font="'Bebas Neue', cursive">Bebas Neue</div>
+            
+            <div class="font-category">Standard</div>
+            <div class="font-option" data-font="Arial, sans-serif">Arial</div>
+            <div class="font-option" data-font="'Times New Roman', serif">Times New Roman</div>
+            <div class="font-option" data-font="Georgia, serif">Georgia</div>
+            
+            <div class="font-category">Fun Fonts</div>
+            <div class="font-option" data-font="'Comic Sans MS', cursive">Comic Sans</div>
+            <div class="font-option" data-font="'Courier New', monospace">Courier New</div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded before executing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Image selection functionality
+            const imageOptions = document.querySelectorAll('.image-option');
+            const memeBackground = document.getElementById('meme-background');
+            
+            // Search functionality - enhanced version
+            const characterSearch = document.getElementById('character-search');
+            const noResultsMessage = document.querySelector('.no-results');
+            const imagesContainer = document.querySelector('.images-container');
+            
+            if (characterSearch && imagesContainer) {
+                characterSearch.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase().trim();
+                    let hasResults = false;
+                    let visibleOptions = 0;
+                    
+                    imageOptions.forEach(option => {
+                        const characterName = option.getAttribute('data-name').toLowerCase();
+                        const displayName = option.querySelector('.image-name').textContent.toLowerCase();
+                        
+                        // Check both data-name and visible text
+                        if (characterName.includes(searchTerm) || displayName.includes(searchTerm)) {
+                            option.style.display = 'block';
+                            hasResults = true;
+                            visibleOptions++;
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    });
+                    
+                    // Show/hide no results message
+                    noResultsMessage.style.display = hasResults ? 'none' : 'block';
+                    
+                    // Auto-select first visible option if search returns one result
+                    if (visibleOptions === 1) {
+                        const visibleOption = imagesContainer.querySelector('.image-option[style="display: block;"]');
+                        if (visibleOption) {
+                            visibleOption.click();
+                        }
+                    }
+                });
+            }
+    
+            // Image click handler
+            imageOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    imageOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        opt.querySelector('img').style.borderColor = '#e0e0e0';
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    this.querySelector('img').style.borderColor = '#d62d20';
+                    
+                    // Update background image
+                    const imgSrc = this.getAttribute('data-img');
+                    memeBackground.src = imgSrc;
+                });
+            });
+            
+            // Font selection functionality
+            const fontOptions = document.querySelectorAll('.font-option');
+            let currentFont = "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif";
+            
+            fontOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    fontOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Update current font
+                    currentFont = this.getAttribute('data-font');
+                    
+                    // Apply to meme text
+                    applyFontToText();
+                });
+            });
+            
+            function applyFontToText() {
+                document.querySelectorAll('.page-text').forEach(el => {
+                    el.style.fontFamily = currentFont;
+                });
+            }
+            
+            // Meme generation function with improved word wrapping
+            function formatText(text, maxCharsPerLine = 10, maxLines = 4) {
+                if (!text) return '';
+                
+                const words = text.split(' ');
+                let result = '';
+                let currentLine = '';
+                let lineCount = 0;
+                
+                for (const word of words) {
+                    if (lineCount >= maxLines) break;
+                    
+                    if (currentLine.length + word.length > maxCharsPerLine) {
+                        if (currentLine) {
+                            result += currentLine + '\n';
+                            lineCount++;
+                            currentLine = '';
+                        }
+                        
+                        if (word.length > maxCharsPerLine) {
+                            const brokenWord = [];
+                            for (let i = 0; i < word.length; i += maxCharsPerLine) {
+                                brokenWord.push(word.substr(i, maxCharsPerLine));
+                            }
+                            result += brokenWord.slice(0, maxLines - lineCount).join('\n');
+                            lineCount += brokenWord.length - 1;
+                            currentLine = brokenWord[brokenWord.length - 1];
+                        } else {
+                            currentLine = word;
+                        }
+                    } else {
+                        if (currentLine) currentLine += ' ';
+                        currentLine += word;
+                    }
+                }
+                
+                if (currentLine && lineCount < maxLines) {
+                    result += currentLine;
+                }
+                
+                return result;
+            }
+    
+            // Generate button handler
+            document.getElementById('generate-btn').addEventListener('click', function() {
+                const leftText = document.getElementById('left-input').value.substring(0, 100);
+                const rightText = document.getElementById('right-input').value.substring(0, 100);
+                
+                document.getElementById('left-page-text').textContent = formatText(leftText);
+                document.getElementById('right-page-text').textContent = formatText(rightText);
+                
+                // Apply current font
+                applyFontToText();
+            });
+    
+            // Clear button handler
+            document.getElementById('clear-btn').addEventListener('click', function() {
+                document.getElementById('left-input').value = '';
+                document.getElementById('right-input').value = '';
+                document.getElementById('left-page-text').textContent = '';
+                document.getElementById('right-page-text').textContent = '';
+            });
+    
+            // Download button handler
+            document.getElementById('download-btn').addEventListener('click', function() {
+                const memeContainer = document.querySelector('.meme-container');
+                const button = this;
+                const originalText = button.textContent;
+                
+                button.textContent = "Generating...";
+                button.disabled = true;
+                
+                html2canvas(memeContainer, {
+                    scale: 2,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: null
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'executive-order-meme.png';
+                    link.href = canvas.toDataURL('image/png');
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    button.textContent = originalText;
+                    button.disabled = false;
+                }).catch(err => {
+                    console.error('Error generating image:', err);
+                    button.textContent = "Error! Try Again";
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
